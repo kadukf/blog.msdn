@@ -1,0 +1,13 @@
+*.v12.suo
+*.user
+*.cache
+packages/
+bin/
+obj/
+csx/
+rcf/
+/TestResults/
+.vs/
+*.log
+*.stackdump
+*.azurePubxml
