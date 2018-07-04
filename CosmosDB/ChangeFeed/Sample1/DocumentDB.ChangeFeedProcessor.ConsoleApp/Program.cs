@@ -10,6 +10,8 @@ namespace DocumentDB.ChangeFeedProcessor.ConsoleApp
 {
     class Program
     {
+        private const string DbName = "DB";
+
         static async Task Main(string[] args)
         {
             var dbUri = "https://localhost:8081/";
@@ -38,16 +40,16 @@ namespace DocumentDB.ChangeFeedProcessor.ConsoleApp
         private static async Task SetupEnvironmentAsync(string dbUri, string key, string collectionName)
         {
             var client = new DocumentClient(new Uri(dbUri), key);
-            var database = new Database() { Id = "DB" };
+            var database = new Database() { Id = DbName };
             await client.CreateDatabaseAsync(database);
-            await client.CreateDocumentCollectionAsync(UriFactory.CreateDatabaseUri("DB"), new DocumentCollection() { Id = collectionName });
-            await client.CreateDocumentCollectionAsync(UriFactory.CreateDatabaseUri("DB"), new DocumentCollection() { Id = $"{collectionName}.Lease.ConsoleApp" });
+            await client.CreateDocumentCollectionAsync(UriFactory.CreateDatabaseUri(DbName), new DocumentCollection() { Id = collectionName });
+            await client.CreateDocumentCollectionAsync(UriFactory.CreateDatabaseUri(DbName), new DocumentCollection() { Id = $"{collectionName}.Lease.ConsoleApp" });
         }
 
         private static Task StartFeedingDataAsync(string dbUri, string key, string collectionName, CancellationToken ctsToken)
         {
             var client = new DocumentClient(new Uri(dbUri), key);
-            Uri collectionUri = UriFactory.CreateDocumentCollectionUri("DB", collectionName);
+            Uri collectionUri = UriFactory.CreateDocumentCollectionUri(DbName, collectionName);
 
             async Task FeedDocumentsAsync()
             {
@@ -65,23 +67,17 @@ namespace DocumentDB.ChangeFeedProcessor.ConsoleApp
             var processor = await new ChangeFeedProcessorBuilder()
                 .WithObserver<ConsoleObserver>()
                 .WithHostName("console_app_host")
-                .WithProcessorOptions(new ChangeFeedProcessorOptions()
-                {
-                    MaxItemCount = 50,
-                    StartFromBeginning = true,
-                    StartTime = DateTime.UtcNow - TimeSpan.FromDays(14)
-                })
                 .WithFeedCollection(new DocumentCollectionInfo()
                 {
                     Uri = new Uri(uri),
                     MasterKey = key,
                     CollectionName = collection,
-                    DatabaseName = "DB"
+                    DatabaseName = DbName
                 })
                 .WithLeaseCollection(new DocumentCollectionInfo()
                 {
                     CollectionName = $"{collection}.Lease.ConsoleApp",
-                    DatabaseName = "DB",
+                    DatabaseName = DbName,
                     Uri = new Uri(uri),
                     MasterKey = key
                 })
