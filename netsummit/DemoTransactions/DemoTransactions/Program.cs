@@ -18,20 +18,20 @@ namespace DemoTransactions
             var dataCollectionName = "data";
             var dbName = "DB";
 
-            // setting up the database for inserting the data
+            // Step1: setting up the database for inserting the data
             var database = new Database { Id = dbName };
             var dbUri = UriFactory.CreateDatabaseUri(dbName);
             await SetupDatabaseAsync(client, dbUri, database, dataCollectionName);
 
-            // add sproc
+            // Step2: add sproc
             Uri dataCollectionUri = UriFactory.CreateDocumentCollectionUri(dbName, dataCollectionName);
             string sprocName = "StoreItems";
             await AddStoredProcedureAsync(client, dataCollectionUri, sprocName);
 
-            // add document manually
+            // Step3: add document manually
             await AddDocumentAsync(client, dataCollectionUri);
 
-            // add documents in transaction
+            // Step4: add documents in transaction
             Uri sprocUri = UriFactory.CreateStoredProcedureUri(dbName, dataCollectionName, sprocName);
             await StoreDocumentsViaStoredProcedureAsync(client, sprocUri);
         }
@@ -64,13 +64,13 @@ namespace DemoTransactions
 
         private static async Task StoreDocumentsViaStoredProcedureAsync(DocumentClient client, Uri sprocUri)
         {
-            dynamic[] documents = {
+            var documents = new[] {
                 new {id = "2", user = "B", version = 0},
                 new {id = "1", user = "A", version = 0},
                 new {id = "3", user = "C", version = 0},
             };
-            dynamic[] args = {documents};
-            Console.WriteLine("Inserting: " + JsonConvert.SerializeObject(documents));
+            var args = new[] {documents};
+            Console.WriteLine("Storing documents over stored procedure: " + JsonConvert.SerializeObject(documents));
 
             StoredProcedureResponse<string> response = await client.ExecuteStoredProcedureAsync<string>(sprocUri, args);
             Console.WriteLine("Session token:" + response.SessionToken);
@@ -80,13 +80,13 @@ namespace DemoTransactions
         private static async Task AddDocumentAsync(DocumentClient client, Uri collectionUri)
         {
             var document = new { id = "manual_0", version = 0 };
-            Console.WriteLine("Inserting: " + JsonConvert.SerializeObject(document));
+            Console.WriteLine("Creating document: " + JsonConvert.SerializeObject(document));
             ResourceResponse<Document> response = await client.CreateDocumentAsync(collectionUri, document);
             Console.WriteLine("Session token:" + response.SessionToken);
             Console.ReadLine();
 
             document = new { id = "manual_1", version = 0 };
-            Console.WriteLine("Inserting: " + JsonConvert.SerializeObject(document));
+            Console.WriteLine("Creating document: " + JsonConvert.SerializeObject(document));
             response = await client.CreateDocumentAsync(collectionUri, document);
             Console.WriteLine("Session token:" + response.SessionToken);
             Console.ReadLine();

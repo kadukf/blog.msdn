@@ -96,28 +96,33 @@ namespace DemoFeed
         private static async Task AddDocumentsAsync(DocumentClient client, Uri collectionUri)
         {
             var document = new { id = "1", user = "A", version = 0 };
-            await client.CreateDocumentAsync(collectionUri, document);
+            var response = await client.CreateDocumentAsync(collectionUri, document);
             Console.WriteLine("Inserted: " + JsonConvert.SerializeObject(document));
+            Console.WriteLine("Session token:" + response.SessionToken);
             Console.ReadLine();
 
             document = new { id = "2", user = "B", version = 0 };
-            await client.CreateDocumentAsync(collectionUri, document);
+            response = await client.CreateDocumentAsync(collectionUri, document);
             Console.WriteLine("Inserted: " + JsonConvert.SerializeObject(document));
+            Console.WriteLine("Session token:" + response.SessionToken);
             Console.ReadLine();
 
             document = new { id = "3", user = "C", version = 0 };
-            await client.CreateDocumentAsync(collectionUri, document);
+            response = await client.CreateDocumentAsync(collectionUri, document);
             Console.WriteLine("Inserted: " + JsonConvert.SerializeObject(document));
+            Console.WriteLine("Session token:" + response.SessionToken);
             Console.ReadLine();
 
             document = new { id = "1", user = "A", version = 1 };
-            await client.UpsertDocumentAsync(collectionUri, document);
+            response = await client.UpsertDocumentAsync(collectionUri, document);
             Console.WriteLine("Upserted: " + JsonConvert.SerializeObject(document));
+            Console.WriteLine("Session token:" + response.SessionToken);
             Console.ReadLine();
 
             document = new { id = "1", user = "A", version = 2 };
-            await client.UpsertDocumentAsync(collectionUri, document);
+            response = await client.UpsertDocumentAsync(collectionUri, document);
             Console.WriteLine("Upserted: " + JsonConvert.SerializeObject(document));
+            Console.WriteLine("Session token:" + response.SessionToken);
             Console.ReadLine();
         }
     }
