@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Diagnostics.EventLog" Version="4.6.0-preview6.19303.8" />
+    <PackageReference Include="Unofficial.Microsoft.WindowsAzure.ServiceRuntime.Msshrtmi" Version="2.9.0" />
+  </ItemGroup>
+
+</Project>
