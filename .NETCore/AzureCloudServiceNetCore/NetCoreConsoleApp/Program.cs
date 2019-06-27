@@ -1,27 +1,36 @@
 ﻿using Microsoft.WindowsAzure.ServiceRuntime.Internal;
 using System;
 using System.Diagnostics;
+using System.Threading;
 
-namespace ConsoleApp1
+namespace ConsoleApp
 {
     class Program
     {
         static void Main(string[] args)
         {
-            var result = InteropRoleManager.Initialize();
+            var result = Microsoft.WindowsAzure.ServiceRuntime.Internal.InteropRoleManager.Initialize();
             WriteLine("Initiliaze:" + result);
 
-            var getResult = InteropRoleManager.GetConfigurationSetting("foo", out string value);
+            var getResult = Microsoft.WindowsAzure.ServiceRuntime.Internal.InteropRoleManager.GetConfigurationSetting("foo", out string value);
             WriteLine("GetCscfgSetting('foo'):" + value);
 
-            var regStatus = InteropRoleManager.RegisterRoleStatusCallBack(RoleStatusCallback);
+            var regStatus = Microsoft.WindowsAzure.ServiceRuntime.Internal.InteropRoleManager.RegisterRoleStatusCallBack(RoleStatusCallback);
             WriteLine("Register status callback:" + regStatus);
 
-            var regShutdown = InteropRoleManager.RegisterRoleShutdownCallBack(RoleShutdownCallback);
+            var regShutdown = Microsoft.WindowsAzure.ServiceRuntime.Internal.InteropRoleManager.RegisterRoleShutdownCallBack(RoleShutdownCallback);
             WriteLine("Register shutdown callback:" + regShutdown);
 
-            Console.Write("Enter key...");
-            Console.ReadLine();
+            Run();
+        }
+
+        static void Run()
+        {
+            while(true)
+            {
+                Thread.Sleep(5000);
+                WriteLine("Running ... ");
+            }
         }
 
         static void WriteLine(string text)
